@@ -2,6 +2,7 @@ const express = require('express')
 const cryptoJs = require('crypto-js')
 const jwt = require('jsonwebtoken')
 const db = require('../config/db')
+const config = require('../config')
 
 const router = express.Router()
 
@@ -72,11 +73,15 @@ router.post('/login', async (req, res) => {
     const user = users[0]
 
     // generate JWT
-    const token = jwt.sign(
-      { userId: user.id, email: user.email, role: user.role },
-      process.env.JWT_SECRET || 'hackathon_secret_key',
-      { expiresIn: '1d' }
-    )
+   const token = jwt.sign(
+  {
+    userId: user.id,
+    email: user.email,
+    role: user.role
+  },
+  config.JWT_SECRET_KEY,   // ✅ MUST MATCH index.js
+  { expiresIn: '1d' }
+)
 
     res.json({
       message: 'Login successful',
